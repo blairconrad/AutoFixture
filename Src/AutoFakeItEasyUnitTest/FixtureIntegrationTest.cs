@@ -42,6 +42,59 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
             Assert.NotEqual(0, result.Property);
         }
 
+#if CAN_FAKE_DELEGATES
+        [Fact]
+        public void FixtureCanCreateFakeOfDelegate()
+        {
+            // Fixture setup
+            var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { GenerateDelegates = true });
+            // Exercise system
+            var result = fixture.Create<Fake<Func<int, int>>>();
+            // Verify outcome
+            Assert.IsAssignableFrom<Fake<Func<int, int>>>(result);
+            // Teardown
+        }
+
+        [Fact]
+        public void FixtureCanCreateDelegateThatIsAFake()
+        {
+            // Fixture setup
+            var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { GenerateDelegates = true });
+            // Exercise system
+            var result = fixture.Create<Func<int, int>>();
+            // Verify outcome
+            Assert.IsAssignableFrom<Func<int, int>>(result);
+            Assert.NotNull(Fake.GetFakeManager(result));
+            // Teardown
+        }
+
+        [Fact]
+        public void FixtureCanFreezeFakeOfDelegate()
+        {
+            // Fixture setup
+            var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { GenerateDelegates = true });
+            // Exercise system
+            var frozen = fixture.Freeze<Fake<Func<int, int>>>();
+            var result = fixture.Create<Func<int, int>>();
+            // Verify outcome
+            Assert.Same(frozen.FakedObject, result);
+            // Teardown
+        }
+#endif
+
+        [Fact]
+        public void FixtureWithDefaultCustomizationCanCreateNonFakedDelegate()
+        {
+            // Fixture setup
+            var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization());
+            // Exercise system
+            var result = fixture.Create<Func<int, int>>();
+            // Verify outcome
+            Assert.IsAssignableFrom<Func<int, int>>(result);
+            Assert.Throws<ArgumentException>(() => Fake.GetFakeManager(result));
+            // Teardown
+        }
+
         [Fact]
         public void FixtureCanCreateFake()
         {
