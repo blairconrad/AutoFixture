@@ -25,7 +25,19 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
             // Arrange
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>
+#pragma warning disable 618
                 new AutoFakeItEasyCustomization(null));
+#pragma warning restore 618
+        }
+
+        [Fact]
+        public void SetNullRelayThrows()
+        {
+            // Arrange
+            var sut = new AutoFakeItEasyCustomization();
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() =>
+                sut.Relay = null);
         }
 
 #if !CAN_FAKE_DELEGATES
@@ -48,7 +60,21 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
         {
             // Arrange
             var expectedRelay = new FakeItEasyRelay();
+#pragma warning disable 618
             var sut = new AutoFakeItEasyCustomization(expectedRelay);
+#pragma warning restore 618
+            // Act
+            ISpecimenBuilder result = sut.Relay;
+            // Assert
+            Assert.Equal(expectedRelay, result);
+        }
+
+        [Fact]
+        public void SpecificationIsCorrectWhenRelayIsSet()
+        {
+            // Arrange
+            var expectedRelay = new FakeItEasyRelay();
+            var sut = new AutoFakeItEasyCustomization { Relay = expectedRelay };
             // Act
             ISpecimenBuilder result = sut.Relay;
             // Assert
