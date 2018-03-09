@@ -39,23 +39,21 @@ namespace AutoFixture.AutoFakeItEasy
         /// <paramref name="relay"/> instead of a <see cref="FakeItEasyRelay"/>.
         /// </summary>
         /// <param name="relay">The relay.</param>
-        [Obsolete("This constructor is obsolete. Use AutoFakeItEasyCustomization() and set the Relay property instead.")]
+        [Obsolete("This constructor is obsolete and will be removed in the future version of the product. " +
+                  "Please use the AutoFakeItEasyCustomization() overload (without arguments) instead and set the Relay property.")]
         public AutoFakeItEasyCustomization(ISpecimenBuilder relay)
         {
-            this.Relay = relay;
+            this.Relay = relay ?? throw new ArgumentNullException(nameof(relay));
         }
 
         /// <summary>
         /// Gets or sets the relay that will be added to <see cref="IFixture.ResidueCollectors"/> when
         /// <see cref="Customize"/> is invoked.
         /// </summary>
-        /// <remarks>
-        /// Defaults to an instance of <see cref="FakeItEasyRelay"/>.
-        /// </remarks>
         public ISpecimenBuilder Relay
         {
-            get => relay;
-            set => relay = value ?? throw new ArgumentNullException(nameof(value));
+            get => this.relay;
+            set => this.relay = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>
@@ -63,7 +61,7 @@ namespace AutoFixture.AutoFakeItEasy
         /// </summary>
         public bool GenerateDelegates
         {
-            get => generateDelegates;
+            get => this.generateDelegates;
             set
             {
                 if (value)
@@ -71,7 +69,7 @@ namespace AutoFixture.AutoFakeItEasy
                     AssertFakeItEasyCanFakeDelegates();
                 }
 
-                generateDelegates = value;
+                this.generateDelegates = value;
             }
         }
 
@@ -101,9 +99,10 @@ namespace AutoFixture.AutoFakeItEasy
             var actualFakeItEasyAssemblyVersion = typeof(A).GetTypeInfo().Assembly.GetName().Version;
             if (actualFakeItEasyAssemblyVersion < minimumFakeItEasyAssemblyVersion)
             {
-                throw new ArgumentException(String.Format(
+                throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,
-                    "Option {0} was specified, but this requires FakeItEasy version {1} or higher, and {2} was detected. Either remove the option or upgrade FakeItEasy.",
+                    "Option {0} was specified, but this requires FakeItEasy version {1} or higher, and {2} was detected. " +
+                    "Either remove the option or upgrade FakeItEasy.",
                     nameof(GenerateDelegates),
                     minimumFakeItEasyAssemblyVersion,
                     actualFakeItEasyAssemblyVersion));

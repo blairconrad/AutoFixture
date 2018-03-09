@@ -19,15 +19,13 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
             Assert.IsAssignableFrom<ICustomization>(sut);
         }
 
-        [Fact]
+        [Fact, Obsolete]
         public void InitializeWithNullRelayThrows()
         {
             // Arrange
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() =>
-#pragma warning disable 618
                 new AutoFakeItEasyCustomization(null));
-#pragma warning restore 618
         }
 
         [Fact]
@@ -40,9 +38,19 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
                 sut.Relay = null);
         }
 
+        [Fact]
+        public void DelegatesFeatureIsDisabledByDefault()
+        {
+            // Arrange
+            // Act
+            var sut = new AutoFakeItEasyCustomization();
+            // Assert
+            Assert.False(sut.GenerateDelegates);
+        }
+
 #if !CAN_FAKE_DELEGATES
         [Fact]
-        public void InitializeWithGenerateDelegatesOptionThrows()
+        public void InitializeWithGenerateDelegatesOptionThrowsIfNotSupported()
         {
             // Arrange
             // Act
@@ -55,14 +63,12 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
         }
 #endif
 
-        [Fact]
+        [Fact, Obsolete]
         public void SpecificationIsCorrectWhenInitializedWithRelay()
         {
             // Arrange
             var expectedRelay = new FakeItEasyRelay();
-#pragma warning disable 618
             var sut = new AutoFakeItEasyCustomization(expectedRelay);
-#pragma warning restore 618
             // Act
             ISpecimenBuilder result = sut.Relay;
             // Assert
@@ -70,14 +76,14 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
         }
 
         [Fact]
-        public void SpecificationIsCorrectWhenRelayIsSet()
+        public void SpecificationIsCorrectWhenRelayIsSetViaProperty()
         {
             // Arrange
             var expectedRelay = new FakeItEasyRelay();
-            var sut = new AutoFakeItEasyCustomization { Relay = expectedRelay };
             // Act
-            ISpecimenBuilder result = sut.Relay;
+            var sut = new AutoFakeItEasyCustomization { Relay = expectedRelay };
             // Assert
+            ISpecimenBuilder result = sut.Relay;
             Assert.Equal(expectedRelay, result);
         }
 
