@@ -29,7 +29,7 @@ namespace AutoFixture.Kernel
             if (delegateType == null)
                 return new NoSpecimen();
 
-            if (!typeof(Delegate).GetTypeInfo().IsAssignableFrom(delegateType))
+            if (!typeof(MulticastDelegate).GetTypeInfo().IsAssignableFrom(delegateType))
                 return new NoSpecimen();
 
             var delegateMethod = delegateType.GetTypeInfo().GetMethod("Invoke");
