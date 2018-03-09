@@ -46,53 +46,51 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
         [Fact]
         public void FixtureCanCreateFakeOfDelegate()
         {
-            // Fixture setup
+            // Arrange
             var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { GenerateDelegates = true });
-            // Exercise system
+            // Act
             var result = fixture.Create<Fake<Func<int, int>>>();
-            // Verify outcome
+            // Assert
             Assert.IsAssignableFrom<Fake<Func<int, int>>>(result);
-            // Teardown
         }
 
         [Fact]
         public void FixtureCanCreateDelegateThatIsAFake()
         {
-            // Fixture setup
+            // Arrange
             var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { GenerateDelegates = true });
-            // Exercise system
+            // Act
             var result = fixture.Create<Func<int, int>>();
-            // Verify outcome
+            // Assert
             Assert.IsAssignableFrom<Func<int, int>>(result);
             Assert.NotNull(Fake.GetFakeManager(result));
-            // Teardown
         }
 
         [Fact]
         public void FixtureCanFreezeFakeOfDelegate()
         {
-            // Fixture setup
+            // Arrange
             var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization { GenerateDelegates = true });
-            // Exercise system
+            // Act
             var frozen = fixture.Freeze<Fake<Func<int, int>>>();
             var result = fixture.Create<Func<int, int>>();
-            // Verify outcome
+            // Assert
             Assert.Same(frozen.FakedObject, result);
-            // Teardown
         }
 #endif
 
         [Fact]
         public void FixtureWithDefaultCustomizationCanCreateNonFakedDelegate()
         {
-            // Fixture setup
+            // Arrange
             var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization());
-            // Exercise system
+            // Act
             var result = fixture.Create<Func<int, int>>();
-            // Verify outcome
+            // Assert
             Assert.IsAssignableFrom<Func<int, int>>(result);
-            Assert.Throws<ArgumentException>(() => Fake.GetFakeManager(result));
-            // Teardown
+
+            var notAFakeException = Assert.Throws<ArgumentException>(() => Fake.GetFakeManager(result));
+            Assert.Contains("not recognized as a fake", notAFakeException.Message);
         }
 
         [Fact]
