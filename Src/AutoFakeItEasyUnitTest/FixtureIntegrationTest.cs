@@ -710,6 +710,25 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
         }
 
         [Fact]
+        public void WithGenerateDelegatesAndConfigureMembers_ShouldNotChangeValueForMethodWithIn()
+        {
+            // Arrange
+            var fixture = new Fixture().Customize(new AutoFakeItEasyCustomization
+            {
+                ConfigureMembers = true,
+                GenerateDelegates = true
+            });
+            var frozenInt = fixture.Freeze<int>();
+            // Act
+            var fake = fixture.Create<DelegateWithIn>();
+            int expectedInt = frozenInt + 1;
+            int inInt = expectedInt;
+            var callResult = fake.Invoke(inInt);
+            // Assert
+            Assert.Equal(expectedInt, inInt);
+        }
+
+        [Fact]
         public void WithGenerateDelegateAndConfigureMembers_DelegatesWithRefParametersAreConfigured()
         {
             // Arrange
@@ -750,6 +769,7 @@ namespace AutoFixture.AutoFakeItEasy.UnitTest
         public delegate string RegularDelegate(short s, byte b);
         public delegate string DelegateWithRef(ref int arg);
         public delegate string DelegateWithOut(out int arg);
+        public delegate string DelegateWithIn(in int arg);
         public delegate string GenericDelegate<T>(T arg);
     }
 }
